@@ -32,14 +32,6 @@ A comprehensive platform for managing apartment society maintenance complaints w
 - **Search & Filters** - Advanced filtering by status, category, priority, and date
 - **Pagination** - Efficient handling of large datasets
 
-## 📸 Screenshots
-
-![Landing Page](https://via.placeholder.com/800x400/1f2937/ffffff?text=PropertyFlow+Landing+Page)
-
-![Admin Dashboard](https://via.placeholder.com/800x400/1f2937/ffffff?text=Admin+Dashboard)
-
-![Complaint Management](https://via.placeholder.com/800x400/1f2937/ffffff?text=Complaint+Management)
-
 ## 🛠 Tech Stack
 
 ### Backend
