@@ -1,7 +1,6 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
-// Verify JWT token
 const authenticate = async (req, res, next) => {
     try {
         const token = req.header('Authorization')?.replace('Bearer ', '');
@@ -30,7 +29,6 @@ const authenticate = async (req, res, next) => {
     }
 };
 
-// Check if user is admin
 const requireAdmin = (req, res, next) => {
     if (req.user.role !== 'admin') {
         return res.status(403).json({ message: 'Access denied. Admin privileges required.' });
@@ -38,7 +36,6 @@ const requireAdmin = (req, res, next) => {
     next();
 };
 
-// Check if user is resident or admin
 const requireResident = (req, res, next) => {
     if (!['resident', 'admin'].includes(req.user.role)) {
         return res.status(403).json({ message: 'Access denied. Resident or admin privileges required.' });

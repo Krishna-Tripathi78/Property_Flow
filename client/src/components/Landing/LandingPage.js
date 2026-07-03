@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
     FileText, Bell, Shield, Clock, Mail, BarChart3,
     ArrowRight, Star, CheckCircle, Building2, Zap,
-    Users, ChevronDown, Menu, X
+    ChevronDown, Menu, X
 } from 'lucide-react';
 
 const LandingPage = () => {

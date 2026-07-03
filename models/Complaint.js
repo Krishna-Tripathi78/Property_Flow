@@ -92,7 +92,6 @@ const complaintSchema = new mongoose.Schema({
     timestamps: true
 });
 
-// Add initial history entry when complaint is created
 complaintSchema.pre('save', function (next) {
     if (this.isNew) {
         this.history.push({
@@ -102,14 +101,12 @@ complaintSchema.pre('save', function (next) {
             timestamp: new Date()
         });
 
-        // Set due date based on priority
         const daysToAdd = this.priority === 'High' ? 3 : this.priority === 'Medium' ? 7 : 14;
         this.dueDate = new Date(Date.now() + (daysToAdd * 24 * 60 * 60 * 1000));
     }
     next();
 });
 
-// Method to update status with history tracking
 complaintSchema.methods.updateStatus = function (newStatus, changedBy, note = '') {
     if (this.status !== newStatus) {
         this.status = newStatus;
@@ -127,7 +124,6 @@ complaintSchema.methods.updateStatus = function (newStatus, changedBy, note = ''
     }
 };
 
-// Method to check if complaint is overdue
 complaintSchema.methods.checkOverdue = function () {
     if (this.status !== 'Resolved' && this.dueDate < new Date()) {
         this.isOverdue = true;
@@ -135,7 +131,6 @@ complaintSchema.methods.checkOverdue = function () {
     return this.isOverdue;
 };
 
-// Index for better query performance
 complaintSchema.index({ resident: 1, createdAt: -1 });
 complaintSchema.index({ status: 1, priority: -1, createdAt: -1 });
 complaintSchema.index({ category: 1 });

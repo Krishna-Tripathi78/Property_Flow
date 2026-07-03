@@ -46,7 +46,6 @@ const noticeSchema = new mongoose.Schema({
     timestamps: true
 });
 
-// Automatically set isPinned for important notices
 noticeSchema.pre('save', function (next) {
     if (this.isImportant) {
         this.isPinned = true;
@@ -54,7 +53,6 @@ noticeSchema.pre('save', function (next) {
     next();
 });
 
-// Index for better query performance
 noticeSchema.index({ isPinned: -1, createdAt: -1 });
 noticeSchema.index({ isActive: 1, createdAt: -1 });
 noticeSchema.index({ category: 1 });

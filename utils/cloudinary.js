@@ -1,18 +1,15 @@
 const cloudinary = require('cloudinary').v2;
 const multer = require('multer');
 
-// Configure Cloudinary
 cloudinary.config({
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
     api_key: process.env.CLOUDINARY_API_KEY,
     api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-// Multer configuration for memory storage
 const storage = multer.memoryStorage();
 
 const fileFilter = (req, file, cb) => {
-    // Check file type
     if (file.mimetype.startsWith('image/')) {
         cb(null, true);
     } else {
@@ -23,12 +20,11 @@ const fileFilter = (req, file, cb) => {
 const upload = multer({
     storage: storage,
     limits: {
-        fileSize: 5 * 1024 * 1024, // 5MB limit
+        fileSize: 5 * 1024 * 1024,
     },
     fileFilter: fileFilter,
 });
 
-// Upload to Cloudinary
 const uploadToCloudinary = (buffer, folder = 'society-tracker') => {
     return new Promise((resolve, reject) => {
         cloudinary.uploader.upload_stream(
@@ -54,7 +50,6 @@ const uploadToCloudinary = (buffer, folder = 'society-tracker') => {
     });
 };
 
-// Delete from Cloudinary
 const deleteFromCloudinary = (publicId) => {
     return new Promise((resolve, reject) => {
         cloudinary.uploader.destroy(publicId, (error, result) => {

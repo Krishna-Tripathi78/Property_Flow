@@ -6,7 +6,6 @@ const { authenticate } = require('../middleware/auth');
 
 const router = express.Router();
 
-// Generate JWT token
 const generateToken = (userId) => {
     return jwt.sign(
         { userId },
@@ -15,13 +14,12 @@ const generateToken = (userId) => {
     );
 };
 
-// Register user
 router.post('/register', [
-    body('name').trim().isLength({ min: 2, max: 100 }).withMessage('Name must be between 2 and 100 characters'),
-    body('email').isEmail().normalizeEmail().withMessage('Please provide a valid email'),
-    body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters long'),
-    body('apartmentNumber').optional({ checkFalsy: true }).trim().isLength({ min: 1, max: 20 }).withMessage('Apartment number must be valid'),
-    body('phoneNumber').optional({ checkFalsy: true }).trim().isMobilePhone().withMessage('Please provide a valid phone number')
+    body('name').trim().isLength({ min: 2, max: 100 }),
+    body('email').isEmail().normalizeEmail(),
+    body('password').isLength({ min: 6 }),
+    body('apartmentNumber').optional({ checkFalsy: true }).trim(),
+    body('phoneNumber').optional({ checkFalsy: true }).trim().isMobilePhone()
 ], async (req, res) => {
     try {
         const errors = validationResult(req);
@@ -34,20 +32,12 @@ router.post('/register', [
 
         const { name, email, password, apartmentNumber, phoneNumber, role = 'resident' } = req.body;
 
-        // Check if user already exists
         const existingUser = await User.findOne({ email });
         if (existingUser) {
             return res.status(400).json({ message: 'User already exists with this email' });
         }
 
-        // Create new user
-        const userData = {
-            name,
-            email,
-            password,
-            role,
-            phoneNumber
-        };
+        const userData = { name, email, password, role, phoneNumber };
 
         if (role === 'resident') {
             if (!apartmentNumber) {
@@ -78,10 +68,9 @@ router.post('/register', [
     }
 });
 
-// Login user
 router.post('/login', [
-    body('email').isEmail().normalizeEmail().withMessage('Please provide a valid email'),
-    body('password').notEmpty().withMessage('Password is required')
+    body('email').isEmail().normalizeEmail(),
+    body('password').notEmpty()
 ], async (req, res) => {
     try {
         const errors = validationResult(req);
@@ -94,18 +83,15 @@ router.post('/login', [
 
         const { email, password } = req.body;
 
-        // Find user by email
         const user = await User.findOne({ email });
         if (!user) {
             return res.status(401).json({ message: 'Invalid credentials' });
         }
 
-        // Check if user is active
         if (!user.isActive) {
             return res.status(401).json({ message: 'Account is deactivated. Please contact admin.' });
         }
 
-        // Check password
         const isPasswordValid = await user.comparePassword(password);
         if (!isPasswordValid) {
             return res.status(401).json({ message: 'Invalid credentials' });
@@ -130,7 +116,6 @@ router.post('/login', [
     }
 });
 
-// Get current user
 router.get('/me', authenticate, async (req, res) => {
     try {
         res.json({
@@ -149,10 +134,9 @@ router.get('/me', authenticate, async (req, res) => {
     }
 });
 
-// Update user profile
 router.put('/profile', authenticate, [
-    body('name').optional().trim().isLength({ min: 2, max: 100 }).withMessage('Name must be between 2 and 100 characters'),
-    body('phoneNumber').optional({ checkFalsy: true }).trim().isMobilePhone().withMessage('Please provide a valid phone number')
+    body('name').optional().trim().isLength({ min: 2, max: 100 }),
+    body('phoneNumber').optional({ checkFalsy: true }).trim().isMobilePhone()
 ], async (req, res) => {
     try {
         const errors = validationResult(req);
