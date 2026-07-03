@@ -64,6 +64,19 @@ export const noticeAPI = {
     }
 };
 
+// Lost & Found API
+export const lostFoundAPI = {
+    getItems: (params = {}) => {
+        const cleanParams = Object.fromEntries(Object.entries(params).filter(([_, v]) => v !== '' && v !== null && v !== undefined));
+        return axios.get('/lostfound', { params: cleanParams });
+    },
+    getItem: (id) => axios.get(`/lostfound/${id}`),
+    createItem: (formData) => axios.post('/lostfound', formData, { headers: { 'Content-Type': 'multipart/form-data' } }),
+    claimItem: (id) => axios.put(`/lostfound/${id}/claim`),
+    updateItem: (id, data) => axios.put(`/lostfound/${id}`, data),
+    searchSimilar: (description, type) => axios.get('/lostfound/search/similar', { params: { description, type } }),
+};
+
 // Admin API functions
 export const adminAPI = {
     // Get dashboard statistics

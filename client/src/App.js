@@ -13,6 +13,7 @@ import ComplaintsList from './components/Complaints/ComplaintsList';
 import CreateComplaint from './components/Complaints/CreateComplaint';
 import ComplaintDetails from './components/Complaints/ComplaintDetails';
 import NoticeBoard from './components/Notices/NoticeBoard';
+import LostFound from './components/LostFound/LostFound';
 import AdminDashboard from './components/Admin/AdminDashboard';
 import AdminComplaints from './components/Admin/AdminComplaints';
 import AdminNotices from './components/Admin/AdminNotices';
@@ -130,6 +131,14 @@ const AppRoutes = () => {
             element={
               <ProtectedRoute>
                 <NoticeBoard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/lostfound"
+            element={
+              <ProtectedRoute>
+                <LostFound />
               </ProtectedRoute>
             }
           />

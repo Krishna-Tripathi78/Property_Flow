@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
-import { Menu, X, Home, FileText, Bell, Settings, LogOut, Shield, Building } from 'lucide-react';
+import { Menu, X, Home, FileText, Bell, Settings, LogOut, Shield, Building, Package } from 'lucide-react';
 
 const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -18,6 +18,7 @@ const Navbar = () => {
         { path: '/dashboard', label: 'Dashboard', icon: Home },
         { path: '/complaints', label: 'My Complaints', icon: FileText },
         { path: '/notices', label: 'Notices', icon: Bell },
+        { path: '/lostfound', label: 'Lost & Found', icon: Package },
     ];
 
     const adminLinks = [

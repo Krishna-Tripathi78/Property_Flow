@@ -10,6 +10,7 @@ const authRoutes = require('./routes/auth');
 const complaintRoutes = require('./routes/complaints');
 const adminRoutes = require('./routes/admin');
 const noticeRoutes = require('./routes/notices');
+const lostFoundRoutes = require('./routes/lostfound');
 
 const app = express();
 
@@ -41,6 +42,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/complaints', complaintRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/notices', noticeRoutes);
+app.use('/api/lostfound', lostFoundRoutes);
 
 if (process.env.NODE_ENV === 'production') {
     app.use(express.static('client/build'));

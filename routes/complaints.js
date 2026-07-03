@@ -4,6 +4,7 @@ const Complaint = require('../models/Complaint');
 const User = require('../models/User');
 const { authenticate, requireResident } = require('../middleware/auth');
 const { upload, uploadToCloudinary, deleteFromCloudinary } = require('../utils/cloudinary');
+const { analyzeComplaintPhoto } = require('../utils/photoAnalysis');
 const emailService = require('../utils/emailService');
 
 const router = express.Router();
@@ -27,7 +28,6 @@ router.post('/', authenticate, requireResident, upload.array('photos', 5), [
         const { title, description, category } = req.body;
         const photos = [];
 
-        // Upload photos to Cloudinary
         if (req.files && req.files.length > 0) {
             for (const file of req.files) {
                 try {
@@ -35,15 +35,28 @@ router.post('/', authenticate, requireResident, upload.array('photos', 5), [
                     photos.push(result);
                 } catch (uploadError) {
                     console.error('Photo upload error:', uploadError);
-                    // Continue without this photo rather than failing the whole complaint
                 }
+            }
+        }
+
+        let analysis = null;
+        let suggestedCategory = category;
+
+        if (photos.length > 0 || description) {
+            analysis = await analyzeComplaintPhoto(
+                photos[0]?.url,
+                `${title} ${description}`
+            );
+
+            if (analysis.confidence > 0.6 && category === 'Other') {
+                suggestedCategory = analysis.suggestedCategory;
             }
         }
 
         const complaint = new Complaint({
             title,
             description,
-            category,
+            category: suggestedCategory,
             resident: req.user._id,
             photos
         });
@@ -55,7 +68,13 @@ router.post('/', authenticate, requireResident, upload.array('photos', 5), [
 
         res.status(201).json({
             message: 'Complaint submitted successfully',
-            complaint
+            complaint,
+            analysis: analysis ? {
+                suggestedCategory: analysis.suggestedCategory,
+                confidence: analysis.confidence,
+                analysis: analysis.analysis,
+                categoryChanged: category !== suggestedCategory
+            } : null
         });
     } catch (error) {
         console.error('Create complaint error:', error);
